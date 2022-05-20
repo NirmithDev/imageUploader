@@ -7,19 +7,21 @@ exports.home = async (req,res) => {
     res.render('main',{images:all_images});
 }
 
-exports.uploads = (req,res,next) => {
+module.exports.uploads = (req,res) => {
     const files=req.files;
-    console.log("->")
+    console.log(req)
     console.log(files)
+    //console.log("->")
+    //console.log(files)
     if(!files){
         const error1 = new Error("PLEASE CHOOSE FILES")
         error1.httpStatusCode=400
-        alert(error1)
         return Promise.reject({error:error1.message})
     }
 
     let imgArray=files.map((file)=>{
         let img=fs.readFileSync(file.path)
+        console.log("here")
         return encode_image = img.toString("base64")
     })
     let result = imgArray.map((src,index)=>{
@@ -28,7 +30,6 @@ exports.uploads = (req,res,next) => {
             contentType:files[index].mimetype,
             imageBase64: src
         }
-        //console.log(finalImg)
         let newUpload = new UploadModel(finalImg);
         return newUpload
         .save()
@@ -43,9 +44,8 @@ exports.uploads = (req,res,next) => {
                 return Promise.reject({error:error.message||`Cannot Upload ${files[index].originalname}`})
             }
         })
-
+        
     })
-
     Promise.all(result)
     .then(msg =>{
         //res.json(msg)

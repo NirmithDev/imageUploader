@@ -4,7 +4,7 @@ const config = require("../../config");
 
 const mongod = new MongoMemoryServer();
 
-const Connect = async() => {
+module.exports.connect = async() => {
     try{
        const con = await mongoose.connect(config.MONGO_URL,{
            useNewUrlParser:true,
@@ -17,7 +17,6 @@ const Connect = async() => {
     };
 }
 
-module.exports = Connect
 module.exports.closeDatabase = async() =>{
     await mongoose.connection.dropDatabase();
     await mongoose.connection.close();
